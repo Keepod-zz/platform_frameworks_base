@@ -12,12 +12,12 @@ USE_CAMERA_STUB:=true
 endif #libcamerastub
 endif
 
+include $(CLEAR_VARS)
+
 ifeq ($(USE_CAMERA_STUB),true)
 #
 # libcamerastub
 #
-
-include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES:=               \
     CameraHardwareStub.cpp      \
@@ -32,6 +32,27 @@ endif
 LOCAL_SHARED_LIBRARIES:= libui
 
 include $(BUILD_STATIC_LIBRARY)
+
+else
+
+LOCAL_SRC_FILES:=               \
+    CameraHardware.cpp          \
+    V4L2Camera.cpp
+
+LOCAL_CFLAGS += -Iexternal/jpeg
+
+LOCAL_MODULE:= libcamera
+
+LOCAL_SHARED_LIBRARIES:= \
+    libui \
+    libutils \
+    libbinder \
+    libcutils
+
+LOCAL_STATIC_LIBRARIES:= libjpeg
+
+include $(BUILD_SHARED_LIBRARY)
+
 endif # USE_CAMERA_STUB
 
 #
@@ -58,7 +79,7 @@ ifeq ($(TARGET_SIMULATOR),true)
 LOCAL_CFLAGS += -DSINGLE_PROCESS
 endif
 
-ifeq ($(USE_CAMERA_STUB), true)
+ifeq ($(USE_CAMERA_STUB),true)
 LOCAL_STATIC_LIBRARIES += libcamerastub
 LOCAL_CFLAGS += -include CameraHardwareStub.h
 else

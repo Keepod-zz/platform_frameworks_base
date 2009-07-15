@@ -609,7 +609,7 @@ status_t CameraService::Client::registerPreviewBuffers()
       transform = ISurface::BufferHeap::ROT_90;
     }
     ISurface::BufferHeap buffers(w, h, w, h,
-                                 PIXEL_FORMAT_YCbCr_420_SP,
+                                 PIXEL_FORMAT_RGB_565,
                                  transform,
                                  0,
                                  mHardware->getPreviewHeap());

@@ -61,7 +61,7 @@ import java.net.UnknownHostException;
  */
 public class WifiStateTracker extends NetworkStateTracker {
 
-    private static final boolean LOCAL_LOGD = Config.LOGD || false;
+    private static final boolean LOCAL_LOGD = Config.LOGD || true;
     
     private static final String TAG = "WifiStateTracker";
 
@@ -343,11 +343,6 @@ public class WifiStateTracker extends NetworkStateTracker {
 
         mSettingsObserver = new SettingsObserver(new Handler());
 
-        mInterfaceName = SystemProperties.get("wifi.interface", "tiwlan0");
-        sDnsPropNames = new String[] {
-            "dhcp." + mInterfaceName + ".dns1",
-            "dhcp." + mInterfaceName + ".dns2"
-        };
         mBatteryStats = IBatteryStats.Stub.asInterface(ServiceManager.getService("batteryinfo"));
 
     }
@@ -729,6 +724,11 @@ public class WifiStateTracker extends NetworkStateTracker {
 
         switch (msg.what) {
             case EVENT_SUPPLICANT_CONNECTION:
+                mInterfaceName = SystemProperties.get("wlan.interface", "wlan0");
+                sDnsPropNames = new String[] {
+                    "dhcp." + mInterfaceName + ".dns1",
+                    "dhcp." + mInterfaceName + ".dns2"
+                };
                 mRunState = RUN_STATE_RUNNING;
                 noteRunState();
                 checkUseStaticIp();

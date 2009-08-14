@@ -3242,6 +3242,24 @@ public class WebView extends AbsoluteLayout
             nativeHideCursor();
        }
 
+        if (event.isAltPressed()) {
+           if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+              goBack();
+              return true;
+           } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+              goForward();
+              return true;
+           }
+        }
+        if (keyCode == KeyEvent.KEYCODE_PAGE_UP) {
+            pageUp(false);
+            return true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_PAGE_DOWN) {
+            pageDown(false);
+            return true;
+        }
+
         if (keyCode >= KeyEvent.KEYCODE_DPAD_UP
                 && keyCode <= KeyEvent.KEYCODE_DPAD_RIGHT) {
             // always handle the navigation keys in the UI thread

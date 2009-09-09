@@ -58,6 +58,7 @@ import android.content.pm.PackageManager;
 import android.content.res.CompatibilityInfo;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.Region;
@@ -9306,7 +9307,7 @@ public class WindowManagerService extends IWindowManager.Stub
             if (DEBUG_INPUT)
                 Log.i(TAG, "Create Mouse Surface");
 
-            mMw = 20;
+            mMw = 12;
             mMh = 20;
             mMx = (mDisplay.getWidth() - mMw) / 2;
             mMy = (mDisplay.getHeight() - mMh) / 2;
@@ -9319,24 +9320,29 @@ public class WindowManagerService extends IWindowManager.Stub
 
                 mMouseSurface =
                     new Surface(mFxSession,
-                                0,-1,mMw,mMy,
+                                0, -1, mMw, mMy,
                                 PixelFormat.TRANSPARENT,
                                 Surface.FX_SURFACE_NORMAL);
                 mCanvas = mMouseSurface.lockCanvas(null);
-                mCanvas.drawColor(0x0);
-
-
-
-                mPath.moveTo(0.0f,0.0f);
-                mPath.lineTo(16.0f, 0.0f);
-                mPath.lineTo(0.0f, 16.0f);
+                Paint tPaint = new Paint();
+                tPaint.setStyle(Paint.Style.STROKE);
+                tPaint.setStrokeWidth(2);
+                tPaint.setColor(0xffffffff);
+                mPath.moveTo(0.0f, 0.0f);
+                mPath.lineTo(12.0f, 12.0f);
+                mPath.lineTo(7.0f, 12.0f);
+                mPath.lineTo(11.0f, 20.0f);
+                mPath.lineTo(8.0f, 21.0f);
+                mPath.lineTo(4.0f, 13.0f);
+                mPath.lineTo(0.0f, 17.0f);
                 mPath.close();
                 mCanvas.clipPath(mPath);
-                mCanvas.drawColor(0x66666666);
+                mCanvas.drawColor(0xff000000);
+                mCanvas.drawPath(mPath, tPaint);
 
                 mMouseSurface.unlockCanvasAndPost(mCanvas);
                 mMouseSurface.openTransaction();
-                mMouseSurface.setSize(mMw,mMh);
+                mMouseSurface.setSize(mMw, mMh);
                 mMouseSurface.closeTransaction();
 
             } catch (Exception e) {

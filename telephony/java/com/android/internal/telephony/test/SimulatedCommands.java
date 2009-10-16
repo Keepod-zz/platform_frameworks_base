@@ -811,7 +811,6 @@ public final class SimulatedCommands extends BaseCommands
      */
     public void getRegistrationState (Message result) {
         String ret[] = new String[14];
-
         ret[0] = "5"; // registered roam
         ret[1] = null;
         ret[2] = null;
@@ -826,7 +825,7 @@ public final class SimulatedCommands extends BaseCommands
         ret[11] = null;
         ret[12] = null;
         ret[13] = null;
-        ret[14] = null;
+        //ret[14] = null;
 
         resultSuccess(result, ret);
     }

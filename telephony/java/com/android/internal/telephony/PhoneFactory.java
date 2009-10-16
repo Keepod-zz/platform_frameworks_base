@@ -19,12 +19,13 @@ package com.android.internal.telephony;
 import android.content.Context;
 import android.net.LocalServerSocket;
 import android.os.Looper;
+import android.os.SystemProperties;
 import android.provider.Settings;
 import android.util.Log;
 
 import com.android.internal.telephony.cdma.CDMAPhone;
 import com.android.internal.telephony.gsm.GSMPhone;
-
+import com.android.internal.telephony.test.SimulatedCommands;
 /**
  * {@hide}
  */
@@ -105,8 +106,8 @@ public class PhoneFactory {
                 Log.i(LOG_TAG, "Cdma Subscription set to " + Integer.toString(cdmaSubscription));
 
                 //reads the system properties and makes commandsinterface
-                sCommandsInterface = new RIL(context, networkMode, cdmaSubscription);
-
+                sCommandsInterface = isFakePhoneEnable()? new SimulatedCommands():
+					new RIL(context, networkMode, cdmaSubscription);
                 int phoneType = getPhoneType(networkMode);
                 if (phoneType == Phone.PHONE_TYPE_GSM) {
                     sProxyPhone = new PhoneProxy(new GSMPhone(context,
@@ -130,6 +131,10 @@ public class PhoneFactory {
      * @param network mode
      * @return Phone Type
      */
+    private static boolean isFakePhoneEnable(){
+        return SystemProperties.getBoolean("ro.simulated.phone",false);
+     }
+
     public static int getPhoneType(int networkMode) {
         switch(networkMode) {
         case RILConstants.NETWORK_MODE_CDMA:

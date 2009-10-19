@@ -1269,6 +1269,11 @@ public final class Settings {
         public static final String TEXT_AUTO_PUNCTUATE = "auto_punctuate";
 
         /**
+         * Setting to showing softkeyboard in text editors. 1 = On, 0 = Off
+         */
+        public static final String SOFTKEYBOARD = "softkeyboard";
+
+        /**
          * Setting to showing password characters in text editors. 1 = On, 0 = Off
          */
         public static final String TEXT_SHOW_PASSWORD = "show_password";

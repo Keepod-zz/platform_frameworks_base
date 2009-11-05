@@ -914,6 +914,9 @@
         <enum name="KEYCODE_MUTE" value="91" />
         <enum name="KEYCODE_PAGE_UP" value="92" />
         <enum name="KEYCODE_PAGE_DOWN" value="93" />
+        <enum name="KEYCODE_VOLUME_MUTE" value="94" />
+        <enum name="KEYCODE_SLEEP" value="95" />
+        <enum name="KEYCODE_WIFI" value="96" />
     </attr>
 
     <!-- ***************************************************************** -->

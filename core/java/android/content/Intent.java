@@ -1585,6 +1585,8 @@ public class Intent implements Parcelable {
     @SdkConstant(SdkConstantType.BROADCAST_INTENT_ACTION)
     public static final String ACTION_CAMERA_BUTTON = "android.intent.action.CAMERA_BUTTON";
 
+    public static final String ACTION_WIFI_BUTTON = "android.intent.action.WIFI_BUTTON";
+
     // *** NOTE: @todo(*) The following really should go into a more domain-specific
     // location; they are not general-purpose actions.
 

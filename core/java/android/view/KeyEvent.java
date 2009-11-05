@@ -122,6 +122,9 @@ public class KeyEvent implements Parcelable {
     public static final int KEYCODE_MUTE            = 91;
     public static final int KEYCODE_PAGE_UP         = 92;
     public static final int KEYCODE_PAGE_DOWN       = 93;
+    public static final int KEYCODE_VOLUME_MUTE     = 94;
+    public static final int KEYCODE_SLEEP           = 95;
+    public static final int KEYCODE_WIFI            = 96;
 
     // NOTE: If you add a new keycode here you must also add it to:
     //  isSystem()
@@ -137,7 +140,7 @@ public class KeyEvent implements Parcelable {
     //  those new codes.  This is intended to maintain a consistent
     //  set of key code definitions across all Android devices.
    
-    private static final int LAST_KEYCODE           = KEYCODE_PAGE_DOWN;
+    private static final int LAST_KEYCODE           = KEYCODE_WIFI;
     
     /**
      * @deprecated There are now more than MAX_KEYCODE keycodes.
@@ -694,6 +697,9 @@ public class KeyEvent implements Parcelable {
         case KEYCODE_CAMERA:
         case KEYCODE_FOCUS:
         case KEYCODE_SEARCH:
+        case KEYCODE_VOLUME_MUTE:
+        case KEYCODE_SLEEP:
+        case KEYCODE_WIFI:
             return true;
         default:
             return false;

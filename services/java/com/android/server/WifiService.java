@@ -229,7 +229,23 @@ public class WifiService extends IWifiManager.Stub {
                 },
                 new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED));
 
+        mContext.registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        processWifiButton();
+                    }
+                },
+                new IntentFilter(Intent.ACTION_WIFI_BUTTON));
+
         setWifiEnabledBlocking(wifiEnabled, false, Process.myUid());
+    }
+
+    private void processWifiButton( ) {
+        if (isAirplaneModeOn() != true) {
+            setWifiEnabledBlocking(getWifiEnabledState() == WIFI_STATE_DISABLED,
+                    false, Process.myUid());
+        }
     }
 
     private boolean getPersistedWifiEnabled() {

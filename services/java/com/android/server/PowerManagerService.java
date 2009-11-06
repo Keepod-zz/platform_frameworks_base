@@ -129,7 +129,7 @@ class PowerManagerService extends IPowerManager.Stub
     // used for noChangeLights in setPowerState()
     private static final int LIGHTS_MASK        = SCREEN_BRIGHT_BIT | BUTTON_BRIGHT_BIT | KEYBOARD_BRIGHT_BIT;
 
-    static final boolean ANIMATE_SCREEN_LIGHTS = true;
+    static final boolean ANIMATE_SCREEN_LIGHTS = false;
     static final boolean ANIMATE_BUTTON_LIGHTS = false;
     static final boolean ANIMATE_KEYBOARD_LIGHTS = false;
     

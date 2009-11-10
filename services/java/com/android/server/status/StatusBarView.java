@@ -22,9 +22,11 @@ public class StatusBarView extends FrameLayout {
     ViewGroup mStatusIcons;
     View mDate;
     FixedSizeDrawable mBackground;
+    TouchFeature touchFeature;
 
     public StatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        touchFeature = new TouchFeature(context);
     }
 
     @Override
@@ -122,6 +124,7 @@ public class StatusBarView extends FrameLayout {
         if (event.getAction() != MotionEvent.ACTION_DOWN) {
             mService.interceptTouchEvent(event);
         }
+        touchFeature.adjust(mService, event);
         return true;
     }
 

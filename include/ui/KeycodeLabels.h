@@ -119,6 +119,9 @@ static const KeycodeLabel KEYCODES[] = {
     { "VOLUME_MUTE", 94},
     { "SLEEP", 95},
     { "WIFI", 96},
+    { "CTRL_RIGHT", 97},
+    { "CTRL_LEFT", 98},
+    { "CAPS_LOCK", 99},
 
     // NOTE: If you add a new keycode here you must also add it to:
     //   (enum KeyCode, in this file)
@@ -229,6 +232,9 @@ typedef enum KeyCode {
     kKeyCodeVolumeMute = 94,
     kKeyCodeSleep = 95,
     kKeyCodeWifi = 96,
+    kKeyCodeCtrlRight = 97,
+    kKeyCodeCtrlLeft = 98,
+    kKeyCodeCapsLock = 99,
 } KeyCode;
 
 static const KeycodeLabel FLAGS[] = {

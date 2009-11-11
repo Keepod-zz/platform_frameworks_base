@@ -917,6 +917,9 @@
         <enum name="KEYCODE_VOLUME_MUTE" value="94" />
         <enum name="KEYCODE_SLEEP" value="95" />
         <enum name="KEYCODE_WIFI" value="96" />
+        <enum name="KEYCODE_CTRL_RIGHT" value="97" />
+        <enum name="KEYCODE_CTRL_LEFT" value="98" />
+        <enum name="KEYCODE_CAPS_LOCK" value="99" />
     </attr>
 
     <!-- ***************************************************************** -->

@@ -681,27 +681,23 @@ int EventHub::open_device(const char *deviceName)
 #endif
 
     if ((device->classes&CLASS_KEYBOARD) != 0) {
-        char tmpfn[sizeof(name)];
+        char devname[sizeof(name)];
         char keylayoutFilename[300];
+        char keylayout[PROPERTY_VALUE_MAX];
 
-        // a more descriptive name
-        device->name = name;
-
-        // replace all the spaces with underscores
-        strcpy(tmpfn, name);
-        for (char *p = strchr(tmpfn, ' '); p && *p; p = strchr(tmpfn, ' '))
-            *p = '_';
-
-        // find the .kl file we need for this device
         const char* root = getenv("ANDROID_ROOT");
+        property_get("persist.sys.keylayout", keylayout, "qwerty");
         snprintf(keylayoutFilename, sizeof(keylayoutFilename),
-                 "%s/usr/keylayout/%s.kl", root, tmpfn);
-        bool defaultKeymap = false;
-        if (access(keylayoutFilename, R_OK)) {
+                 "%s/usr/keylayout/%s.kl", root, keylayout);
+        strcpy(devname, keylayout);
+        bool defaultKeymap = access(keylayoutFilename, R_OK);
+        if (defaultKeymap) {
             snprintf(keylayoutFilename, sizeof(keylayoutFilename),
-                     "%s/usr/keylayout/%s", root, "qwerty.kl");
-            defaultKeymap = true;
+                     "%s/usr/keylayout/%s.kl", root, "qwerty");
+            strcpy(devname, "qwerty");
         }
+        LOGI("2:devname = %s, keylayout =%s, keylayoutFilename = %s",
+                devname, keylayout, keylayoutFilename);
         device->layoutMap->load(keylayoutFilename);
 
         // tell the world about the devname (the descriptive name)

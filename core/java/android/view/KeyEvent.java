@@ -128,6 +128,7 @@ public class KeyEvent implements Parcelable {
     public static final int KEYCODE_CTRL_RIGHT      = 97;
     public static final int KEYCODE_CTRL_LEFT       = 98;
     public static final int KEYCODE_CAPS_LOCK       = 99;
+    public static final int KEYCODE_MORE_KEY        = 100;
 
     // NOTE: If you add a new keycode here you must also add it to:
     //  isSystem()
@@ -143,7 +144,7 @@ public class KeyEvent implements Parcelable {
     //  those new codes.  This is intended to maintain a consistent
     //  set of key code definitions across all Android devices.
    
-    private static final int LAST_KEYCODE           = KEYCODE_CAPS_LOCK;
+    private static final int LAST_KEYCODE           = KEYCODE_MORE_KEY;
     
     /**
      * @deprecated There are now more than MAX_KEYCODE keycodes.

@@ -920,6 +920,7 @@
         <enum name="KEYCODE_CTRL_RIGHT" value="97" />
         <enum name="KEYCODE_CTRL_LEFT" value="98" />
         <enum name="KEYCODE_CAPS_LOCK" value="99" />
+        <enum name="KEYCODE_MORE_KEY" value="100" />
     </attr>
 
     <!-- ***************************************************************** -->

@@ -96,5 +96,5 @@ int rm_dex(const char *path);
 int protect(char *pkgname, gid_t gid);
 int get_size(const char *pkgname, const char *apkpath, const char *fwdlock_apkpath,
              int *codesize, int *datasize, int *cachesize);
-int free_cache(int free_size);
+int free_cache(size_t free_size);
 int dexopt(const char *apk_path, uid_t uid, int is_public);

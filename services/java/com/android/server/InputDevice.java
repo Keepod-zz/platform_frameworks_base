@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
 import android.view.RawInputEvent;
 
 public class InputDevice {
-    static final boolean DEBUG_POINTERS = true;
+    static final boolean DEBUG_POINTERS = false;
     static final boolean DEBUG_HACKS = false;
     static final boolean DEBUG_MOUSE = false;
     static final String TAG = "InputDevice";

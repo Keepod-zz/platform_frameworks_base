@@ -572,8 +572,8 @@ public abstract class KeyInputQueue {
                                     send = true;
                                 } else if ((classes&RawInputEvent.CLASS_MOUSE) != 0) {
                                     if (DEBUG_MOUSE)
-                                        Log.i(TAG,"Mouse key event found, down:
-                                            " + ev.value + " was :" +
+                                        Log.i(TAG,"Mouse key event found, down:"
+                                            + ev.value + " was :" +
                                             di.mAbs.mDown[0] + " Send "+send);
                                     di.mAbs.changed = true;
                                     di.mAbs.mNextNumPointers =

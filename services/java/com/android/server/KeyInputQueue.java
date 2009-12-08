@@ -53,6 +53,7 @@ public abstract class KeyInputQueue {
     static final boolean DEBUG = false;
     static final boolean DEBUG_VIRTUAL_KEYS = false;
     static final boolean DEBUG_POINTERS = false;
+    static final boolean DEBUG_MOUSE = false;
     
     /**
      * Turn on some hacks we have to improve the touch interaction with a
@@ -555,13 +556,13 @@ public abstract class KeyInputQueue {
                             
                         } else if (ev.type == RawInputEvent.EV_KEY) {
                             // Single touch protocol: touch going down or up.
-                            if ((ev.scancode == RawInputEvent.BTN_TOUCH ||
-                                    ev.scancode == RawInputEvent.BTN_MOUSE) &&
+                            if ((ev.scancode == RawInputEvent.BTN_TOUCH) &&
                                     (classes&(RawInputEvent.CLASS_TOUCHSCREEN
                                             |RawInputEvent.CLASS_TOUCHSCREEN_MT))
                                             == RawInputEvent.CLASS_TOUCHSCREEN) {
                                 di.mAbs.changed = true;
                                 di.mAbs.mDown[0] = ev.value != 0;
+                                Log.i(TAG,"TS key event found, down: " + ev.value);
                             
                             // Trackball (mouse) protocol: press down or up.
                             } else if (ev.scancode == RawInputEvent.BTN_MOUSE) {
@@ -570,8 +571,14 @@ public abstract class KeyInputQueue {
                                     di.mRel.mNextNumPointers = ev.value != 0 ? 1 : 0;
                                     send = true;
                                 } else if ((classes&RawInputEvent.CLASS_MOUSE) != 0) {
+                                    if (DEBUG_MOUSE)
+                                        Log.i(TAG,"Mouse key event found, down:
+                                            " + ev.value + " was :" +
+                                            di.mAbs.mDown[0] + " Send "+send);
                                     di.mAbs.changed = true;
-                                    di.mAbs.mDown[0] = ev.value != 0;
+                                    di.mAbs.mNextNumPointers =
+                                            (ev.value != 0) ?1:2;
+                                    send = true;
                                 }
                             } else if (ev.scancode == RawInputEvent.BTN_RIGHT) {
                                 if ((classes&RawInputEvent.CLASS_MOUSE) != 0) {
@@ -640,6 +647,8 @@ public abstract class KeyInputQueue {
     
                         // Process movement events from trackball (mouse) protocol.
                         } else if (ev.type == RawInputEvent.EV_REL) {
+                            if (DEBUG_MOUSE)
+                                Log.i(TAG, "rel event found, class :" + classes + " mouse value: " + RawInputEvent.CLASS_MOUSE);
                             if ((classes&RawInputEvent.CLASS_TRACKBALL) != 0) {
                                 // Add this relative movement into our totals.
                                 if (ev.scancode == RawInputEvent.REL_X) {
@@ -654,12 +663,12 @@ public abstract class KeyInputQueue {
                                     di.mAbs.changed = true;
                                     mCx += (int)ev.value;
                                     mCx = ((mCx < 0) ? 0 : (mCx >= mDisplayWidth ? mDisplayWidth - 1 : mCx));
-                                    di.mAbs.mNextData[di.mAbs.mAddingPointerOffset + MotionEvent.SAMPLE_X] = mCx;
+                                    di.mAbs.mNextData[MotionEvent.SAMPLE_X] = mCx;
                                 } else if (ev.scancode == RawInputEvent.REL_Y) {
                                     di.mAbs.changed = true;
                                     mCy += (int)ev.value;
                                     mCy = ((mCy < 0) ? 0 : (mCy >= mDisplayHeight ? mDisplayHeight - 1 : mCy));
-                                    di.mAbs.mNextData[di.mAbs.mAddingPointerOffset + MotionEvent.SAMPLE_Y] = mCy;
+                                    di.mAbs.mNextData[MotionEvent.SAMPLE_Y] = mCy;
                                 } else if (ev.scancode == RawInputEvent.REL_WHEEL &&
                                                (classes&RawInputEvent.CLASS_MOUSE) != 0) {
                                     boolean down;
@@ -772,7 +781,8 @@ public abstract class KeyInputQueue {
                                             me = ms.generateAbsMotion(di, curTime,
                                                     curTimeNano, mDisplay,
                                                     mOrientation, mGlobalMetaState);
-                                            if (DEBUG_POINTERS) Log.v(TAG, "Absolute: x="
+                                            if (DEBUG_POINTERS || DEBUG_MOUSE)
+                                                Log.v(TAG, "Absolute: x="
                                                     + di.mAbs.mNextData[MotionEvent.SAMPLE_X]
                                                     + " y="
                                                     + di.mAbs.mNextData[MotionEvent.SAMPLE_Y]
@@ -813,6 +823,8 @@ public abstract class KeyInputQueue {
                                 
                                 ms = di.mRel;
                                 if (ms.changed) {
+                                    if (DEBUG_MOUSE)
+                                        Log.i(TAG, "Mouse debug show check Rel");
                                     ms.changed = false;
                                     
                                     me = ms.generateRelMotion(di, curTime,

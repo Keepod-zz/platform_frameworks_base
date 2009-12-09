@@ -178,8 +178,17 @@ LOCAL_JAVA_LIBRARIES := core ext
 LOCAL_MODULE := framework
 LOCAL_MODULE_CLASS := JAVA_LIBRARIES
 
+ifeq ($(PRODUCT_POLICY),android.policy_mid)
+TARGET_PRELOADED_CLASSES ?= $(PRODUCT_OUT)/preloaded-classes
+$(PRODUCT_OUT)/preloaded-classes: $(LOCAL_PATH)/preloaded-classes
+	sed 's|\(policy.impl.\)\(Phone\)|\1Mid|' $< > $@
+endif
+
+# Each target can define its preloaded-classes
+TARGET_PRELOADED_CLASSES ?= $(LOCAL_PATH)/preloaded-classes
+
 # List of classes and interfaces which should be loaded by the Zygote.
-LOCAL_JAVA_RESOURCE_FILES += $(LOCAL_PATH)/preloaded-classes
+LOCAL_JAVA_RESOURCE_FILES += $(TARGET_PRELOADED_CLASSES)
 
 #LOCAL_JARJAR_RULES := $(LOCAL_PATH)/jarjar-rules.txt
 

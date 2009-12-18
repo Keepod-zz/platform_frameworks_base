@@ -129,7 +129,7 @@ class PowerManagerService extends IPowerManager.Stub
     // used for noChangeLights in setPowerState()
     private static final int LIGHTS_MASK        = SCREEN_BRIGHT_BIT | BUTTON_BRIGHT_BIT | KEYBOARD_BRIGHT_BIT;
 
-    static final boolean ANIMATE_SCREEN_LIGHTS = false;
+    static final boolean ANIMATE_SCREEN_LIGHTS = true;
     static final boolean ANIMATE_BUTTON_LIGHTS = false;
     static final boolean ANIMATE_KEYBOARD_LIGHTS = false;
     
@@ -1001,7 +1001,7 @@ class PowerManagerService extends IPowerManager.Stub
         public void run()
         {
             synchronized (mLocks) {
-                if (mSpew) {
+                if (true) {
                     Log.d(TAG, "user activity timeout timed out nextState=" + this.nextState);
                 }
 
@@ -1350,7 +1350,7 @@ class PowerManagerService extends IPowerManager.Stub
         synchronized (mLocks) {
             int err;
 
-            if (mSpew) {
+            if (true) {
                 Log.d(TAG, "setPowerState: mPowerState=0x" + Integer.toHexString(mPowerState)
                         + " newState=0x" + Integer.toHexString(newState)
                         + " noChangeLights=" + noChangeLights);
@@ -1416,13 +1416,13 @@ class PowerManagerService extends IPowerManager.Stub
                     // seconds to prevent a buggy app from disabling the
                     // screen forever; see forceReenableScreen().)
                     boolean reallyTurnScreenOn = true;
-                    if (mSpew) {
+                    if (true) {
                         Log.d(TAG, "- turning screen on...  mPreventScreenOn = "
                               + mPreventScreenOn);
                     }
 
                     if (mPreventScreenOn) {
-                        if (mSpew) {
+                        if (true) {
                             Log.d(TAG, "- PREVENTING screen from really turning on!");
                         }
                         reallyTurnScreenOn = false;

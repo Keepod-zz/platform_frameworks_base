@@ -61,7 +61,7 @@ import java.net.UnknownHostException;
  */
 public class WifiStateTracker extends NetworkStateTracker {
 
-    private static final boolean LOCAL_LOGD = Config.LOGD || true;
+    private static final boolean LOCAL_LOGD = true;//Config.LOGD || true;
     
     private static final String TAG = "WifiStateTracker";
 

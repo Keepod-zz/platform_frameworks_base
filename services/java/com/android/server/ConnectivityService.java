@@ -28,6 +28,7 @@ import android.net.MobileDataStateTracker;
 import android.net.NetworkInfo;
 import android.net.NetworkStateTracker;
 import android.net.wifi.WifiStateTracker;
+import android.net.ethernet.EthernetStateTracker;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -79,6 +80,7 @@ public class ConnectivityService extends IConnectivityManager.Stub {
     private List mNetRequestersPids[];
 
     private WifiWatchdogService mWifiWatchdogService;
+    private EthernetStateTracker mEthernetStateTracker;
 
     // priority order of the nettrackers
     // (excluding dynamically set mNetworkPreference)
@@ -116,6 +118,8 @@ public class ConnectivityService extends IConnectivityManager.Stub {
             mName = fragments[0].toLowerCase();
             if (fragments[1].toLowerCase().equals("wifi")) {
                 mRadio = ConnectivityManager.TYPE_WIFI;
+            } else if (fragments[1].toLowerCase().equals("ethernet")){
+                mRadio = ConnectivityManager.TYPE_ETH;
             } else {
                 mRadio = ConnectivityManager.TYPE_MOBILE;
             }
@@ -150,6 +154,8 @@ public class ConnectivityService extends IConnectivityManager.Stub {
             mSimultaneity = Integer.parseInt(fragments[2]);
             if (mName.equals("wifi")) {
                 mType = ConnectivityManager.TYPE_WIFI;
+            } else if (mName.equals("ethernet")){
+                mType = ConnectivityManager.TYPE_ETH;
             } else {
                 mType = ConnectivityManager.TYPE_MOBILE;
             }
@@ -264,6 +270,13 @@ public class ConnectivityService extends IConnectivityManager.Stub {
         ServiceManager.addService(Context.WIFI_SERVICE, wifiService);
         mNetTrackers[ConnectivityManager.TYPE_WIFI] = wst;
 
+        if (DBG) Log.v(TAG, "Starting Ethernet Service");
+        mEthernetStateTracker = new EthernetStateTracker(context,mHandler);
+        EthernetService ethService = new EthernetService(context, 
+                                                    mEthernetStateTracker);
+        ServiceManager.addService(Context.ETH_SERVICE, ethService);
+        mNetTrackers[ConnectivityManager.TYPE_ETH] = mEthernetStateTracker;
+
         mNetTrackers[ConnectivityManager.TYPE_MOBILE] =
                 new MobileDataStateTracker(context, mHandler,
                 ConnectivityManager.TYPE_MOBILE, Phone.APN_TYPE_DEFAULT,
@@ -293,6 +306,9 @@ public class ConnectivityService extends IConnectivityManager.Stub {
 
         mTestMode = SystemProperties.get("cm.test.mode").equals("true")
                 && SystemProperties.get("ro.build.type").equals("eng");
+
+        if (DBG) Log.v(TAG, "set Ethernet Service as prefer service");
+        setNetworkPreference(ConnectivityManager.TYPE_ETH);
 
         for (NetworkStateTracker t : mNetTrackers)
             t.startMonitoring();

@@ -126,7 +126,8 @@ public class ConnectivityManager
      * will use this connection by default.  Should not coexist with other
      * default connections.
      */
-    public static final int TYPE_WIFI        = 1;
+    public static final int TYPE_ETH         = 1;
+    public static final int TYPE_WIFI        = 2;
     /**
      * An MMS-specific Mobile data connection.  This connection may be the
      * same as {@link #TYPEMOBILE} but it may be different.  This is used
@@ -134,7 +135,7 @@ public class ConnectivityManager
      * Service servers.  It may coexist with default data connections.
      * {@hide}
      */
-    public static final int TYPE_MOBILE_MMS  = 2;
+    public static final int TYPE_MOBILE_MMS  = TYPE_WIFI + 1;
     /**
      * A SUPL-specific Mobile data connection.  This connection may be the
      * same as {@link #TYPEMOBILE} but it may be different.  This is used
@@ -143,7 +144,7 @@ public class ConnectivityManager
      * default data connections.
      * {@hide}
      */
-    public static final int TYPE_MOBILE_SUPL = 3;
+    public static final int TYPE_MOBILE_SUPL = TYPE_WIFI+2;
     /**
      * A DUN-specific Mobile data connection.  This connection may be the
      * same as {@link #TYPEMOBILE} but it may be different.  This is used
@@ -152,7 +153,7 @@ public class ConnectivityManager
      * connections.
      * {@hide}
      */
-    public static final int TYPE_MOBILE_DUN  = 4;
+    public static final int TYPE_MOBILE_DUN  = TYPE_WIFI+3;
     /**
      * A High Priority Mobile data connection.  This connection is typically
      * the same as {@link #TYPEMOBILE} but the routing setup is different.
@@ -161,7 +162,7 @@ public class ConnectivityManager
      * will route over this interface.
      *{@hide}
      */
-    public static final int TYPE_MOBILE_HIPRI = 5;
+    public static final int TYPE_MOBILE_HIPRI = TYPE_WIFI+4;
     /** {@hide} */
     public static final int MAX_RADIO_TYPE   = TYPE_WIFI;
     /** {@hide} */

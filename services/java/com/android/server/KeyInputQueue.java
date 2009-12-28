@@ -556,7 +556,7 @@ public abstract class KeyInputQueue {
                             
                         } else if (ev.type == RawInputEvent.EV_KEY) {
                             // Single touch protocol: touch going down or up.
-                            if ((ev.scancode == RawInputEvent.BTN_TOUCH) &&
+                            if ((ev.scancode == RawInputEvent.BTN_TOUCH || ev.scancode == RawInputEvent.BTN_MOUSE) &&
                                     (classes&(RawInputEvent.CLASS_TOUCHSCREEN
                                             |RawInputEvent.CLASS_TOUCHSCREEN_MT))
                                             == RawInputEvent.CLASS_TOUCHSCREEN) {

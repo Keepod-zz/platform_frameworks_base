@@ -255,14 +255,14 @@ LayerBuffer::Buffer::Buffer(const ISurface::BufferHeap& buffers, ssize_t offset)
     src.img.handle = 0;
 
     gralloc_module_t const * module = LayerBuffer::getGrallocModule();
-    if (module && module->perform) {
+    if (module) {/*&& module->perform) {
         int err = module->perform(module,
                 GRALLOC_MODULE_PERFORM_CREATE_HANDLE_FROM_BUFFER,
                 buffers.heap->heapID(), buffers.heap->getSize(),
                 offset, buffers.heap->base(),
                 &src.img.handle);
 
-        if (err == NO_ERROR) {
+        if (err == NO_ERROR) {*/
             src.crop.l = 0;
             src.crop.t = 0;
             src.crop.r = buffers.w;
@@ -272,7 +272,7 @@ LayerBuffer::Buffer::Buffer(const ISurface::BufferHeap& buffers, ssize_t offset)
             src.img.h       = buffers.ver_stride ?: buffers.h;
             src.img.format  = buffers.format;
             src.img.base    = (void*)(intptr_t(buffers.heap->base()) + offset);
-        }
+        //}
     }
 }
 
@@ -435,7 +435,7 @@ void LayerBuffer::BufferSource::onDraw(const Region& clip) const
     if (UNLIKELY(mTexture.name == -1LU)) {
         mTexture.name = mLayer.createTexture();
     }
-
+/*
 #if defined(EGL_ANDROID_image_native_buffer)
     if (mLayer.mFlags & DisplayHardware::DIRECT_TEXTURE) {
          // NOTE: Assume the buffer is  allocated with the proper USAGE flags
@@ -448,7 +448,7 @@ void LayerBuffer::BufferSource::onDraw(const Region& clip) const
 
         err = mLayer.initializeEglImage(graphicBuffer, &mTexture);
     }
-#endif
+#endif*/
     else {
         err = INVALID_OPERATION;
     }

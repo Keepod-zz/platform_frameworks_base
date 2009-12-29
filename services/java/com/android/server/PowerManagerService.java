@@ -1350,7 +1350,7 @@ class PowerManagerService extends IPowerManager.Stub
         synchronized (mLocks) {
             int err;
 
-            if (true) {
+            if (false) {
                 Log.d(TAG, "setPowerState: mPowerState=0x" + Integer.toHexString(mPowerState)
                         + " newState=0x" + Integer.toHexString(newState)
                         + " noChangeLights=" + noChangeLights);
@@ -1422,7 +1422,7 @@ class PowerManagerService extends IPowerManager.Stub
                     }
 
                     if (mPreventScreenOn) {
-                        if (true) {
+                        if (false) {
                             Log.d(TAG, "- PREVENTING screen from really turning on!");
                         }
                         reallyTurnScreenOn = false;

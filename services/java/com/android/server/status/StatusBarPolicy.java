@@ -341,7 +341,6 @@ public class StatusBarPolicy {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.i(TAG, "received intent " + action);
             if (action.equals(Intent.ACTION_TIME_TICK)) {
                 updateClock();
             }
@@ -449,7 +448,6 @@ public class StatusBarPolicy {
         mEthData = IconData.makeIcon("ethernet", null, sEthImages[0], 0, 0);
         mEthIcon = service.addIcon(mEthData, null);
         service.setIconVisibility(mEthIcon, false);
-        Log.i(TAG, "init Eth status icon " + mEthIcon);
         // TTY status
         mTTYModeEnableIconData = IconData.makeIcon("tty",
                 null, com.android.internal.R.drawable.stat_sys_tty_mode, 0, 0);

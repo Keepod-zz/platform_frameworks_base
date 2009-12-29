@@ -1,5 +1,4 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +31,14 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.net.ethernet.EthernetManager;
+import android.net.ethernet.EthernetStateTracker;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.os.SystemProperties;
 import android.provider.Settings;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
@@ -294,6 +296,7 @@ public class StatusBarPolicy {
             com.android.internal.R.drawable.stat_sys_wifi_signal_3,
             com.android.internal.R.drawable.stat_sys_wifi_signal_4,
         };
+  
     private static final int sWifiTemporarilyNotConnectedImage =
             com.android.internal.R.drawable.stat_sys_wifi_signal_0;
 
@@ -301,7 +304,14 @@ public class StatusBarPolicy {
     private boolean mIsWifiConnected = false;
     private IBinder mWifiIcon;
     private IconData mWifiData;
-
+    //Ethernet
+    private static final int[] sEthImages = new int [] {
+    	com.android.internal.R.drawable.connect_established,
+    	com.android.internal.R.drawable.connect_no,
+    	com.android.internal.R.drawable.connect_creating
+    };
+    private IBinder mEthIcon;
+    private IconData mEthData;
     // gps
     private IBinder mGpsIcon;
     private IconData mGpsEnabledIconData;
@@ -331,6 +341,7 @@ public class StatusBarPolicy {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            Log.i(TAG, "received intent " + action);
             if (action.equals(Intent.ACTION_TIME_TICK)) {
                 updateClock();
             }
@@ -371,7 +382,9 @@ public class StatusBarPolicy {
                     action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION) ||
                     action.equals(WifiManager.RSSI_CHANGED_ACTION)) {
                 updateWifi(intent);
-            }
+            } else if (action.equals(EthernetManager.ETH_STATE_CHANGED_ACTION)){
+                	updateEth(intent);
+            } 
             else if (action.equals(GpsLocationProvider.GPS_ENABLED_CHANGE_ACTION) ||
                     action.equals(GpsLocationProvider.GPS_FIX_CHANGE_ACTION)) {
                 updateGps(intent);
@@ -432,7 +445,11 @@ public class StatusBarPolicy {
         mWifiIcon = service.addIcon(mWifiData, null);
         service.setIconVisibility(mWifiIcon, false);
         // wifi will get updated by the sticky intents
-
+        //ethernet
+        mEthData = IconData.makeIcon("ethernet", null, sEthImages[0], 0, 0);
+        mEthIcon = service.addIcon(mEthData, null);
+        service.setIconVisibility(mEthIcon, false);
+        Log.i(TAG, "init Eth status icon " + mEthIcon);
         // TTY status
         mTTYModeEnableIconData = IconData.makeIcon("tty",
                 null, com.android.internal.R.drawable.stat_sys_tty_mode, 0, 0);
@@ -513,6 +530,7 @@ public class StatusBarPolicy {
         filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(WifiManager.RSSI_CHANGED_ACTION);
+        filter.addAction(EthernetManager.ETH_STATE_CHANGED_ACTION);
         filter.addAction(GpsLocationProvider.GPS_ENABLED_CHANGE_ACTION);
         filter.addAction(GpsLocationProvider.GPS_FIX_CHANGE_ACTION);
         filter.addAction(TelephonyIntents.ACTION_SIM_STATE_CHANGED);
@@ -1113,6 +1131,25 @@ public class StatusBarPolicy {
         mService.setIconVisibility(mBluetoothIcon, mBluetoothEnabled);
     }
 
+    private final void updateEth(Intent intent) {
+    	final int event = intent.getIntExtra(EthernetManager.EXTRA_ETH_STATE,EthernetManager.ETH_STATE_UNKNOWN);
+    	int iconId;
+    	switch (event) {
+		case EthernetStateTracker.EVENT_HW_CONNECTED:
+		case EthernetStateTracker.EVENT_INTERFACE_CONFIGURATION_SUCCEEDED:
+			   mService.setIconVisibility(mEthIcon, true);
+			   iconId = sEthImages[0];
+			   break;
+		case EthernetStateTracker.EVENT_HW_DISCONNECTED:
+		case EthernetStateTracker.EVENT_INTERFACE_CONFIGURATION_FAILED:
+			mService.setIconVisibility(mEthIcon, false);
+			return;
+		default:	
+			iconId = sEthImages[2];
+    	}
+        mEthData.iconId = iconId;
+        mService.updateIcon(mEthIcon, mEthData, null);
+    }
     private final void updateWifi(Intent intent) {
         final String action = intent.getAction();
         if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {

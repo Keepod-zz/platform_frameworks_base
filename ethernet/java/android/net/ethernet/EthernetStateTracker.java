@@ -15,6 +15,7 @@ import android.net.DhcpInfo;
 import android.net.NetworkStateTracker;
 import android.net.NetworkUtils;
 import android.net.NetworkInfo.DetailedState;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -25,12 +26,12 @@ import android.util.*;
 
 public class EthernetStateTracker extends NetworkStateTracker {
 	private static final String TAG="EthernetStateTracker";
-	private static final int EVENT_DHCP_START			= 0;
-	private static final int EVENT_INTERFACE_CONFIGURATION_SUCCEEDED = 1;
-	private static final int EVENT_INTERFACE_CONFIGURATION_FAILED	= 2;
-	private static final int EVENT_HW_CONNECTED			= 3;
-	private static final int EVENT_HW_DISCONNECTED			= 4;
-	private static final int EVENT_HW_PHYCONNECTED			= 5;
+	public static final int EVENT_DHCP_START			= 0;
+	public static final int EVENT_INTERFACE_CONFIGURATION_SUCCEEDED = 1;
+	public static final int EVENT_INTERFACE_CONFIGURATION_FAILED	= 2;
+	public static final int EVENT_HW_CONNECTED			= 3;
+	public static final int EVENT_HW_DISCONNECTED			= 4;
+	public static final int EVENT_HW_PHYCONNECTED			= 5;
 	private static final int NOTIFY_ID				= 6;
 
 	private EthernetManager mEM;
@@ -47,6 +48,7 @@ public class EthernetStateTracker extends NetworkStateTracker {
 	private boolean mStartingDhcp;
 	private NotificationManager mNotificationManager;
 	private Notification mNotification;
+	private Handler mTrackerTarget;
 
 	public EthernetStateTracker(Context context, Handler target) {
 
@@ -276,43 +278,48 @@ public class EthernetStateTracker extends NetworkStateTracker {
 	private void postNotification(int event) {
 		String ns = Context.NOTIFICATION_SERVICE;
 		mNotificationManager = (NotificationManager)mContext.getSystemService(ns);
-		if (mNotificationManager != null) {
-			int icon;
-			CharSequence title = "Ethernet Status";
-			CharSequence detail;
-			if(mNotification == null) {
-				mNotification = new Notification();
-				mNotification.flags = Notification.FLAG_AUTO_CANCEL;
-				mNotification.contentIntent = PendingIntent.getActivity(mContext, 0,
-						new Intent(EthernetManager.NETWORK_STATE_CHANGED_ACTION), 0);
+		final Intent intent = new Intent(EthernetManager.ETH_STATE_CHANGED_ACTION);
+        intent.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY_BEFORE_BOOT);
+        intent.putExtra(EthernetManager.EXTRA_ETH_STATE, event);
+        mContext.sendStickyBroadcast(intent);
+        if(false) {
+        	if (mNotificationManager != null) {
+        		int icon;
+        		CharSequence title = "Ethernet Status";
+				CharSequence detail;
+				if(mNotification == null) {
+					mNotification = new Notification();
+					mNotification.contentIntent = PendingIntent.getActivity(mContext, 0,
+							new Intent(EthernetManager.NETWORK_STATE_CHANGED_ACTION), 0);
+				}
+				mNotification.when = System.currentTimeMillis();
+	
+				switch (event) {
+				case EVENT_HW_CONNECTED:
+				case EVENT_INTERFACE_CONFIGURATION_SUCCEEDED:
+						//mNotification.icon=icon = com.android.internal.R.drawable.connect_established;
+						String ipprop="dhcp."+mInterfaceName+".ipaddress";
+						String ipaddr = SystemProperties.get(ipprop);
+						detail = "Ethernet is connected. IP address: " + ipaddr ;
+					break;
+				case EVENT_HW_DISCONNECTED:
+				case EVENT_INTERFACE_CONFIGURATION_FAILED:
+						//mNotification.icon = icon = com.android.internal.R.drawable.connect_no;
+						detail = "Ethernet is disconnected.";
+					break;
+				default:
+					//mNotification.icon=icon = com.android.internal.R.drawable.connect_creating;
+					detail = "Unknown event with Ethernet.";
+				}
+				Log.i(TAG, "post event to notification manager "+detail);
+				mNotification.setLatestEventInfo(mContext, title, detail,mNotification.contentIntent );
+				mNotificationManager.notify(10010,mNotification);
+				//Message message = mTarget.obtainMessage(EVENT_NOTIFICATION_CHANGED,mNotification);
+				//mTarget.sendMessageDelayed(message, 0);
+			} else {
+				Log.i(TAG, "notification manager is not up yet");
 			}
-			mNotification.when = System.currentTimeMillis();
-
-			switch (event) {
-			case EVENT_HW_CONNECTED:
-			case EVENT_INTERFACE_CONFIGURATION_SUCCEEDED:
-				mNotification.icon=icon = com.android.internal.R.drawable.connect_established;
-				String ipprop="dhcp."+mInterfaceName+".ipaddress";
-				String ipaddr = SystemProperties.get(ipprop);
-				detail = "Ethernet is connected. IP address: " + ipaddr ;
-
-				break;
-			case EVENT_HW_DISCONNECTED:
-			case EVENT_INTERFACE_CONFIGURATION_FAILED:
-				mNotification.icon = icon = com.android.internal.R.drawable.connect_no;
-				detail = "Ethernet is disconnected.";
-				break;
-			default:
-				mNotification.icon=icon = com.android.internal.R.drawable.connect_creating;
-				detail = "Unknown event with Ethernet.";
-			}
-			Log.i(TAG, "post event to notification manager "+detail);
-			mNotification.setLatestEventInfo(mContext, title, detail,mNotification.contentIntent );
-			Message message = mTarget.obtainMessage(EVENT_NOTIFICATION_CHANGED, 1,icon,mNotification);
-			mTarget.sendMessageDelayed(message, 0);
-		} else {
-			Log.i(TAG, "notification manager is not up yet");
-		}
+        }
 
 	}
 	public void handleMessage(Message msg) {
@@ -373,8 +380,7 @@ public class EthernetStateTracker extends NetworkStateTracker {
 	}
 
 	private class DhcpHandler extends Handler {
-		private Handler mTrackerTarget;
-
+		
 		 public DhcpHandler(Looper looper, Handler target) {
 				super(looper);
 				mTrackerTarget = target;

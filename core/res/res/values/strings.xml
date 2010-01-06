@@ -245,7 +245,7 @@
     <string name="contentServiceTooManyDeletesNotificationDesc">Too many <xliff:g id="content_type">%s</xliff:g> deletes.</string>
 
     <!-- If MMS discovers there isn't much space left on the device, it will show a toast with this message. -->
-    <string name="low_memory">Phone storage is full! Delete some files to free space.</string>
+    <string name="low_memory">Device storage is full! Delete some files to free space.</string>
 
 
     <!-- Display name for any time a piece of data refers to the owner of the phone. For example, this could be used in place of the phone's phone number. -->
@@ -253,7 +253,7 @@
 
     <!-- Power Dialog --> <skip />
     <!-- Title for the Phone Options dialog to lock the screen, turn off the phone etc. -->
-    <string name="power_dialog">Phone options</string>
+    <string name="power_dialog">Device options</string>
     <!-- Button to turn on silent mode, within the Phone Options dialog -->
     <string name="silent_mode">Silent mode</string>
     <!-- Button to turn on the radio, within the Phone Options dialog -->
@@ -287,7 +287,7 @@
     <string name="no_recent_tasks">No recent applications.</string>
 
     <!-- Title of the Global Actions Dialog -->
-    <string name="global_actions">Phone options</string>
+    <string name="global_actions">Device options</string>
 
     <!-- Title of the Global Actions Dialog -->
     <string name="global_nb_actions">Power button options</string>
@@ -943,7 +943,7 @@
         Not for use by normal applications.</string>
 
     <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
-    <string name="permlab_modifyPhoneState">modify phone state</string>
+    <string name="permlab_modifyPhoneState">modify device state</string>
     <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permdesc_modifyPhoneState">Allows the application to control the
         phone features of the device. An application with this permission can switch
@@ -951,7 +951,7 @@
         you.</string>
 
     <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
-    <string name="permlab_readPhoneState">read phone state and identity</string>
+    <string name="permlab_readPhoneState">read device state and identity</string>
     <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permdesc_readPhoneState">Allows the application to access the phone
         features of the device.  An application with this permission can determine the phone
@@ -1802,7 +1802,7 @@
     <!-- If the device is getting low on internal storage, a notification is shown to the user.  This is the title of that notification. -->
     <string name="low_internal_storage_view_title">Low on space</string>
     <!-- If the device is getting low on internal storage, a notification is shown to the user.  This is the message of that notification. -->
-    <string name="low_internal_storage_view_text">Phone storage space is getting low.</string>
+    <string name="low_internal_storage_view_text">Device storage space is getting low.</string>
 
     <!-- Preference framework strings. -->
     <string name="ok">OK</string>

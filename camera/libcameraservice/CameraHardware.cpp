@@ -26,9 +26,9 @@
 #include <sys/mman.h>
 
 #define VIDEO_DEVICE        "/dev/video0"
-#define MIN_WIDTH           640
+#define MIN_WIDTH           352
 
-#define MIN_HEIGHT          480
+#define MIN_HEIGHT          288
 #define PIXEL_FORMAT        V4L2_PIX_FMT_YUYV
 
 namespace android {

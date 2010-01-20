@@ -9327,7 +9327,7 @@ public class WindowManagerService extends IWindowManager.Stub
 
                 mMouseSurface =
                     new Surface(mFxSession,
-                                0, -1, mMw, mMy,
+                                0, -1, mMw, mMh,
                                 PixelFormat.TRANSPARENT,
                                 Surface.FX_SURFACE_NORMAL);
                 mCanvas = mMouseSurface.lockCanvas(null);

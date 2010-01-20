@@ -39,9 +39,11 @@ CameraHardware::CameraHardware()
                   : mParameters(),
                     mHeap(0),
                     mPreviewHeap(0),
+                    mRecordHeap(0),
                     mRawHeap(0),
                     mPreviewFrameSize(0),
                     mCurrentPreviewFrame(0),
+                    mRecordRunning(false),
                     previewStopped(true),
                     nQueued(0),
                     nDequeued(0),
@@ -122,8 +124,15 @@ int CameraHardware::previewThread()
     if (!previewStopped) {
         // Get preview frame
         camera.GrabPreviewFrame(mHeap->getBase());
-        if (mMsgEnabled & CAMERA_MSG_PREVIEW_FRAME)
+        if ((mMsgEnabled & CAMERA_MSG_PREVIEW_FRAME) ||
+		(mMsgEnabled & CAMERA_MSG_VIDEO_FRAME)) {
+            if (mMsgEnabled & CAMERA_MSG_VIDEO_FRAME) {
+			camera.GrabRecordFrame(mRecordHeap->getBase());
+			nsecs_t timeStamp = systemTime(SYSTEM_TIME_MONOTONIC);
+			mTimestampFn(timeStamp, CAMERA_MSG_VIDEO_FRAME,mRecordBuffer, mUser);
+            }
             mDataFn(CAMERA_MSG_PREVIEW_FRAME,mBuffer, mUser);
+	}
     }
 
     return NO_ERROR;
@@ -190,20 +199,28 @@ bool CameraHardware::previewEnabled()
 
 status_t CameraHardware::startRecording()
 {
-    return UNKNOWN_ERROR;
+    Mutex::Autolock lock(mLock);
+
+    mRecordHeap = new MemoryHeapBase(mPreviewFrameSize);
+    mRecordBuffer = new MemoryBase(mRecordHeap, 0, mPreviewFrameSize);
+    mRecordRunning = true;
+
+    return NO_ERROR;
 }
 
 void CameraHardware::stopRecording()
 {
+    mRecordRunning = false;
 }
 
 bool CameraHardware::recordingEnabled()
 {
-    return false;
+    return mRecordRunning;
 }
 
 void CameraHardware::releaseRecordingFrame(const sp<IMemory>& mem)
 {
+    return;
 }
 
 // ---------------------------------------------------------------------------

@@ -23,6 +23,7 @@
 
 #include <linux/videodev.h>
 
+#include "converter.h"
 #include "V4L2Camera.h"
 
 extern "C" { /* Android jpeglib.h missed extern "C" */
@@ -235,6 +236,40 @@ void V4L2Camera::GrabPreviewFrame (void *previewBuffer)
     ret = ioctl(fd, VIDIOC_QBUF, &videoIn->buf);
     if (ret < 0) {
         LOGE("GrabPreviewFrame: VIDIOC_QBUF Failed");
+        return;
+    }
+
+    nQueued++;
+
+    free(tmpBuffer);
+}
+
+void V4L2Camera::GrabRecordFrame (void *recordBuffer)
+{
+    unsigned char *tmpBuffer;
+    int ret;
+
+    tmpBuffer = (unsigned char *) calloc (1, videoIn->width * videoIn->height * 2);
+
+    videoIn->buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    videoIn->buf.memory = V4L2_MEMORY_MMAP;
+
+    /* DQ */
+    ret = ioctl(fd, VIDIOC_DQBUF, &videoIn->buf);
+    if (ret < 0) {
+        LOGE("GrabRecordFrame: VIDIOC_DQBUF Failed");
+
+        return;
+    }
+    nDequeued++;
+
+    memcpy (tmpBuffer, videoIn->mem[videoIn->buf.index], (size_t) videoIn->buf.bytesused);
+
+    yuyv422_to_yuv420((unsigned char *)tmpBuffer, (unsigned char *)recordBuffer, videoIn->width, videoIn->height);
+
+    ret = ioctl(fd, VIDIOC_QBUF, &videoIn->buf);
+    if (ret < 0) {
+        LOGE("GrabRecordFrame: VIDIOC_QBUF Failed");
         return;
     }
 

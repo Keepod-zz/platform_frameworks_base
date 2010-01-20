@@ -122,8 +122,11 @@ private:
 
     sp<MemoryHeapBase>      mPreviewHeap;
     sp<MemoryHeapBase>      mRawHeap;
+    sp<MemoryHeapBase>      mRecordHeap;
+    sp<MemoryBase>          mRecordBuffer;
 
     bool                    mPreviewRunning;
+    bool                    mRecordRunning;
     int                     mPreviewFrameSize;
 
     // protected by mLock
